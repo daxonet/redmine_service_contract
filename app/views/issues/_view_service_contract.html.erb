@@ -1,0 +1,8 @@
+<% if User.current.allowed_to?(:view_service_contracts, @project) && @issue.service_contracts_issue && @issue.service_contract %> 
+<div class="attributes">
+<%= issue_fields_rows do |rows|
+  rows.left l(:label_service_contract), link_to(@issue.service_contract.number,project_service_contract_path(@issue.project,:id => @issue.service_contracts_issue.service_contract_id))
+  rows.right l(:label_service_contract_used), @issue.service_contracts_issue.used_hours
+end %>
+</div>
+<% end %>

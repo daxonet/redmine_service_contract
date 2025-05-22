@@ -1,0 +1,40 @@
+---
+en:
+  label: Hello
+  label_filter_group_custom_fields: Custom fields
+  label_attribute_of_time_entry: "Spent time's %{name}"
+  field_time_entry: Spent time
+  activerecord:
+    attributes:
+      service_contract:
+        name: Name
+        number: Number
+        subject: Subject
+        from_date: From date
+        to_date: To date
+        default_use_spent_hours: Default use spent hours
+        is_default: Is default
+        closed: Closed
+        total_hours: Total hours
+        warning_hours: Warning hours
+        error_hours: Error hours
+        field_service_contract_project: Project
+        field_service_contract_author: Author
+        field_service_contract_created_at: Created at
+        field_service_contract_updated_at: Updated at
+      service_contracts_issue:
+        service_contract_id: Service Contracts
+  easy_query:
+    name:
+      service_contract_query: Service Contracts
+  heading_service_contract_new: New Service Contract
+  heading_service_contract_edit: Edit Service Contract
+  button_service_contract_new: New Service Contract
+  label_service_contracts: Service Contracts
+  label_service_contract: Service Contract
+  label_service_contract_used: Used
+  permission_view_service_contracts: View Service Contracts
+  permission_manage_service_contracts: Manage Service Contracts
+  title_service_contract_new: Click to create new Service Contract
+  label_filter_group_service_contract_query: ServiceContract
+  services_contract_number: Service Contracts

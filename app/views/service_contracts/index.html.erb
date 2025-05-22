@@ -1,0 +1,22 @@
+
+<div class="contextual">
+  <% if User.current.allowed_to?(:manage_service_contracts, @project, global: false) %>
+    <%= link_to l(:button_service_contract_new), new_project_service_contract_path, class: 'icon icon-add' %>
+  <% end %>
+</div>
+<h2><%= @query.queried_class.to_s %></h2>
+
+<%= form_tag(_project_service_contracts_path(@project), method: :get, id: 'query_form') do %>
+  <%= render partial: 'queries/query_form' %>
+<% end %>
+
+<% if @query.valid? %>
+  <% if @entities.empty? %>
+    <p class="nodata"><%= l(:label_no_data) %></p>
+  <% else %>
+    <%= render_query_totals(@query) %>
+    <%= render partial: 'list', locals: { entities: @entities }%>
+    <span class="pagination"><%= pagination_links_full @entity_pages, @entity_count %></span>
+  <% end %>
+<% end %>
+

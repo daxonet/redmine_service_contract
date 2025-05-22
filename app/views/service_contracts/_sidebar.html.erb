@@ -1,0 +1,9 @@
+<ul>
+  <% if @service_contract && !@service_contract.new_record? %>
+    <%= content_tag(:li, link_to(l(:button_edit), edit_polymorphic_path([@project, @service_contract]), title: l(:button_edit), class: 'icon icon-edit button')) %>
+  <% end %>
+  <% if @service_contract.nil? %>
+    <%= content_tag(:li, link_to(l(:button_service_contract_new), new_polymorphic_path([@project, :service_contract]), title: l(:title_service_contract_new), class: 'icon icon-add button button-positive')) %>
+  <% end %>
+  <%= content_tag(:li, link_to(l(:label_service_contracts), polymorphic_path([@project, :service_contracts], set_filter: '1'), title: l(:label_service_contracts), class: 'icon icon-folder button')) %>
+</ul>

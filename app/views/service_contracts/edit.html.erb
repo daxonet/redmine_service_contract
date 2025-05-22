@@ -1,0 +1,8 @@
+<%= title l(:heading_service_contract_edit) %>
+
+<%= render partial: 'form', locals: { service_contract: @service_contract } %>
+
+<% ### PAGE CUSTOMS ########################################################## %>
+<% content_for :sidebar do %>
+  <%= render partial: 'service_contracts/sidebar' %>
+<% end %>

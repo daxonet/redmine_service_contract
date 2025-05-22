@@ -1,0 +1,23 @@
+local_assigns[:api].service_contract do
+  local_assigns[:api].id service_contract.id
+  local_assigns[:api].name service_contract.name
+  local_assigns[:api].number service_contract.number
+  local_assigns[:api].subject service_contract.subject
+  local_assigns[:api].from_date service_contract.from_date
+  local_assigns[:api].to_date service_contract.to_date
+  local_assigns[:api].default_use_spent_hours service_contract.default_use_spent_hours
+  local_assigns[:api].is_default service_contract.is_default
+  local_assigns[:api].closed service_contract.closed
+  local_assigns[:api].warning_hours service_contract.warning_hours
+  local_assigns[:api].error_hours service_contract.error_hours
+  local_assigns[:api].created_at service_contract.created_at
+  local_assigns[:api].updated_at service_contract.updated_at
+  render_api_custom_values service_contract.visible_custom_field_values, local_assigns[:api]
+  local_assigns[:api].array :attachments do
+    service_contract.attachments.each do |attachment|
+      render_api_attachment attachment, local_assigns[:api]
+    end
+  end if include_in_api_response?('attachments')
+
+  call_hook :helper_render_api_service_contract, { api: local_assigns[:api], service_contract: service_contract }
+end

@@ -1,0 +1,99 @@
+<%= labelled_form_for([@project, @service_contract], html: { multipart: true, id: 'service_contract_form', class: 'tabular', remote: request.xhr? }) do |f| %>
+  <%= error_messages_for @service_contract %>
+
+  <div class="box">
+      <% if service_contract.safe_attribute?('project_id') && !@project %>
+      <p>
+        <%= f.label :project_id, ::ServiceContract.human_attribute_name(:project_id) %>
+        <%= f.select :project_id, Project.allowed_to(:manage_service_contracts).collect{|x| [x.name, x.id]}, include_blank: true %>
+      </p>
+      <% end %>
+
+      <% if service_contract.safe_attribute?('number') %>
+      <p>
+        <%= f.label :number, ::ServiceContract.human_attribute_name(:number) %>
+        <%= f.text_field :number %>
+      </p>
+      <% end %>
+
+      <% if service_contract.safe_attribute?('subject') %>
+      <p>
+        <%= f.label :subject, ::ServiceContract.human_attribute_name(:subject) %>
+        <%= f.text_field :subject %>
+      </p>
+      <% end %>
+      
+      
+      <% if service_contract.safe_attribute?('from_date') %>
+      <p>
+        <%= f.label :from_date, ::ServiceContract.human_attribute_name(:from_date) %>
+        <%= f.date_field :from_date %>
+      </p>
+      <% end %>
+      <% if service_contract.safe_attribute?('to_date') %>
+      <p>
+        <%= f.label :to_date, ::ServiceContract.human_attribute_name(:to_date) %>
+        <%= f.date_field :to_date %>
+      </p>
+      <% end %>
+      <% if service_contract.safe_attribute?('default_use_spent_hours') %>
+      <p>
+        <%= f.label :default_use_spent_hours, ::ServiceContract.human_attribute_name(:default_use_spent_hours) %>
+        <%= f.check_box :default_use_spent_hours %>
+      </p>
+      <% end %>
+      <% if service_contract.safe_attribute?('is_default') %>
+      <p>
+        <%= f.label :is_default, ::ServiceContract.human_attribute_name(:is_default) %>
+        <%= f.check_box :is_default %>
+      </p>
+      <% end %>
+      <% if service_contract.safe_attribute?('closed') %>
+      <p>
+        <%= f.label :closed, ::ServiceContract.human_attribute_name(:closed) %>
+        <%= f.check_box :closed %>
+      </p>
+      <% end %>
+      <% if service_contract.safe_attribute?('total_hours') %>
+      <p>
+        <%= f.label :total_hours, ::ServiceContract.human_attribute_name(:total_hours) %>
+        <%= f.text_field :total_hours %>
+      </p>
+      <% end %>
+      <% if service_contract.safe_attribute?('warning_hours') %>
+      <p>
+        <%= f.label :warning_hours, ::ServiceContract.human_attribute_name(:warning_hours) %>
+        <%= f.text_field :warning_hours %>
+      </p>
+      <% end %>
+      <% if service_contract.safe_attribute?('error_hours') %>
+      <p>
+        <%= f.label :error_hours, ::ServiceContract.human_attribute_name(:error_hours) %>
+        <%= f.text_field :error_hours %>
+      </p>
+      <% end %>
+      
+      <% unless @trackers.empty? %>
+      <fieldset class="box tabular" id="service_contract_trackers"><legend><%= toggle_checkboxes_link('#service_contract_trackers input[type=checkbox]') %><%= l(:label_tracker_plural)%></legend>
+      <% @trackers.each do |tracker| %>
+        <label class="floating">
+          <%= check_box_tag 'service_contract[tracker_ids][]', tracker.id, @service_contract.trackers.to_a.include?(tracker), :id => nil %>
+          <%= tracker_name_tag tracker %>
+        </label>
+      <% end %>
+      <%= hidden_field_tag 'service_contract[tracker_ids][]', '' %>
+      </fieldset>
+      <% end %>
+  </div>
+
+
+  <% if !request.xhr? %>
+    <p>
+      <% if f.object.new_record? %>
+        <%= submit_tag l(:button_create), title: l(:button_create), class: "button-positive" %>
+      <% else %>
+        <%= submit_tag l(:button_update), title: l(:button_update), class: "button-positive" %>
+      <% end %>
+    </p>
+  <% end %>
+<% end %>

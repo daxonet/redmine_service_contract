@@ -1,0 +1,25 @@
+<% if User.current.allowed_to?(:view_service_contracts, @project) && @project.has_service_contracts(@issue.tracker)  %>
+    <% @issue.build_service_contracts_issue if @issue.service_contracts_issue.blank? %>
+    <%= labelled_fields_for :service_contracts_issue, @issue.service_contracts_issue do |a| %>
+
+    <div class="service-contracts-issue">
+        <div class="splitcontent">
+            <div class="splitcontentleft">
+                <p><%= a.select :service_contract_id, @project.open_service_contracts_for_all_ancestor_projects_tracker(@issue.tracker).collect{|x| [x.number, x.id]},{include_blank: true},
+                                :onchange => "updateIssueFrom('#{escape_javascript update_issue_form_path(@project, @issue)}', this)" %></p>
+                <% if @issue.service_contracts_issue.service_contract_id %>
+                <p><%= @issue.service_contracts_issue.service_contract.to_s %></p>
+                <% end %>
+            </div>
+            <div class="splitcontentright">
+                <p><%= a.check_box :use_spent_hours, 
+                                :class => 'use-spent-hours',
+                                :onchange => "updateIssueFrom('#{escape_javascript update_issue_form_path(@project, @issue)}', this)" %></p>
+                <% unless @issue.service_contracts_issue.use_spent_hours %>
+                    <p><%= a.hours_field :hours, :size => 3, :class => 'hours' %></p>
+                <% end %>
+            </div>
+        </div>
+    </div>
+    <% end %>
+<% end %>

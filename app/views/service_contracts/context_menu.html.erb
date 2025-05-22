@@ -1,0 +1,20 @@
+<ul>
+  <% if @service_contract %>
+    <li><%= context_menu_link l(:button_edit), edit_service_contract_path(@service_contract), class: 'icon icon-edit', disabled: !@can[:edit] %></li>
+  <% end %>
+  <% if @safe_attributes.include? 'status' %>
+  <li class="folder">
+    <a href="#" class="submenu icon icon-issue-status" onclick="return false;"><%= l(:field_status) %></a>
+    <ul>
+      <% ServiceContract.statuses.keys.each do |status| %>
+        <li>
+          <%= context_menu_link l("service_contract.statuses.#{status}"), bulk_update_service_contract_path(id: @service_contract_ids, service_contract: { status: status }, back_url: @back), method: :put, selected: (@selected[:status] == status), disabled: !@can[:edit], confirm: l(:text_are_you_sure) %>
+        </li>
+      <% end %>
+    </ul>
+  </li>
+  <% end %>
+  <li><%= context_menu_link l(:button_delete), service_contract_path(id: @service_contract_ids, back_url: @back), method: :delete, data: { confirm: l(:text_are_you_sure) }, class: 'icon icon-del', disabled: !@can[:delete] %></li>
+
+  <%= call_hook(:view_service_contracts_context_menu_end, { service_contract: @service_contract, service_contracts: @service_contracts, can: @can, back: @back, project: @project }) %>
+</ul>

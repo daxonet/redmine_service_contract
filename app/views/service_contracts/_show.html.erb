@@ -1,0 +1,86 @@
+<%= title @service_contract.number %>
+<div class="issue">
+  <div class="subject">
+    <h3><%= h(@service_contract.subject) %></h3>
+  </div>
+  <div class="attributes">
+    <%= issue_fields_rows do |rows| %>     
+      <% rows.left ::ServiceContract.human_attribute_name(:from_date), format_date(@service_contract.from_date) %>
+      <% rows.right ::ServiceContract.human_attribute_name(:to_date), format_date(@service_contract.to_date) %>
+      <% rows.left ::ServiceContract.human_attribute_name(:total_hours), format_object(@service_contract.total_hours) %>
+      <% rows.right 'Remaining hours', format_object(@service_contract.remain_hours) %>
+      <% rows.left l(:label_service_contract_used), format_object(@service_contract.total_used_hours) %>
+      <% rows.right 'Total cases', format_object(@service_contract.total_issue) %>
+      
+      <% rows.left ::ServiceContract.human_attribute_name(:warning_hours), format_object(@service_contract.warning_hours), :class =>  "hide-when-print" %>
+      <% rows.right ::ServiceContract.human_attribute_name(:error_hours), format_object(@service_contract.error_hours), :class => "hide-when-print" %>
+      <% rows.left ::ServiceContract.human_attribute_name(:default_use_spent_hours), format_object(@service_contract.default_use_spent_hours), :class => "hide-when-print" %>      
+      <% rows.right ::ServiceContract.human_attribute_name(:is_default), format_object(@service_contract.is_default), :class => "hide-when-print" %>
+      <% rows.left ::ServiceContract.human_attribute_name(:closed), format_object(@service_contract.closed), :class => "hide-when-print" %>
+  
+    <% end %>
+      
+  </div>
+</div>
+
+
+  <div class="tabs hide-when-print">
+  <ul>
+      <li><%= link_to(l(:label_issue), project_service_contract_path(@project),
+                                        :class => (action_name == 'show' ? 'selected' : nil)) %></li>
+      <li><%= link_to(l(:label_spent_time), timelog_project_service_contract_path(@project),
+                                        :class => (action_name == 'timelog' ? 'selected' : nil)) %></li>
+  </ul>
+  </div>
+<%
+@query_form_tag_path = _project_service_contract_path(@project, action_name) #action_name == 'show' ? project_service_contract_path(@project) : timelog_project_service_contract_path(@project)
+%>
+  
+<%= form_tag(@query_form_tag_path, :method => :get, :id => 'query_form') do %>
+<%= render :partial => 'queries/query_form' %>
+<% end %>
+
+
+<% if @query.valid? %>
+<% if @entities.empty? %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% else %>
+  <%= render_query_totals(@query) %>
+  <%= render partial: 'issues_list', locals: { entities: @entities }%>
+  <span class="pagination"><%= pagination_links_full @entity_pages, @entity_count %></span>
+<% end %>
+<% end %>
+
+<% other_formats_links do |f| %>
+  <%= f.link_to_with_query_parameters 'CSV', {}, :onclick => "showModal('csv-export-options', '350px'); return false;" %>
+  <%= f.link_to_with_query_parameters 'PDF' %>
+<% end %>
+
+<div id="csv-export-options" style="display:none;">
+  <h3 class="title"><%= l(:label_export_options, :export_format => 'CSV') %></h3>
+  <%= form_tag(_project_service_contract_path(@project, action_name, :format => 'csv'), :method => :get, :id => 'csv-export-form') do %>
+  <%= query_as_hidden_field_tags(@query) %>
+  <p>
+    <label><%= radio_button_tag 'c[]', '', true %> <%= l(:description_selected_columns) %></label><br />
+    <label><%= radio_button_tag 'c[]', 'all_inline' %> <%= l(:description_all_columns) %></label>
+  </p>
+  <p>
+    <label><%= check_box_tag 'c[]', 'description', @query.has_column?(:description) %> <%= l(:field_description) %></label>
+    <label><%= check_box_tag 'c[]', 'last_notes', @query.has_column?(:last_notes) %> <%= l(:label_last_notes) %></label>
+  </p>
+  <%= export_csv_encoding_select_tag %>
+  <% if @entity_count > Setting.issues_export_limit.to_i %>
+  <p class="icon icon-warning">
+    <%= l(:setting_issues_export_limit) %>: <%= Setting.issues_export_limit.to_i %>
+  </p>
+  <% end %>
+  <p class="buttons">
+    <%= submit_tag l(:button_export), :name => nil, :onclick => "hideModal(this);", :data => { :disable_with => false } %>
+    <%= link_to_function l(:button_cancel), "hideModal(this);" %>
+  </p>
+  <% end %>
+</div>
+
+<% content_for :sidebar do %>
+  <%= render partial: 'service_contracts/sidebar' %>
+<% end %>
